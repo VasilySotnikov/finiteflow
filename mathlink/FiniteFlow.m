@@ -1558,7 +1558,7 @@ FFRatRec[a_List,p_]:=Catch[ToExpression/@FFRatRecImplem[ToString[CheckedInt[#]]&
 FFRatRec[a_,p_]:=Catch[ToExpression[FFRatRecImplem[{ToString[CheckedInt[a]]},ToString[CheckedInt[p]]][[1]]]];
 
 
-Options[FFSetLearningOptions]={"PrimeNo"->Automatic,"MaxSingularPoints"->Automatic};
+Options[FFSetLearningOptions]={"PrimeNo"->Automatic,"MaxSingularPoints"->Automatic,"MinLearnTimes"->Automatic};
 FFSetLearningOptions[graph_,node_,OptionsPattern[]]:=Catch[
 FFSetLearningOptionsImplem[
 GetGraphId[graph],GetAlgId[graph,node],

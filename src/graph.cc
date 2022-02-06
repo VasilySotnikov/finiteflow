@@ -725,9 +725,19 @@ namespace fflow {
       return FAILED;
     const LearningOptions & opt = node->learn_opt;
 
-    Ret ret = graph.learn_all(&ctxt_, Mod(BIG_UINT_PRIMES[opt.prime_no]),
+    Ret ret ; 
+
+    if (opt.n_min_learn > 0) {
+        ret = graph.learn_all(&ctxt_, Mod(BIG_UINT_PRIMES[opt.prime_no]),
                               ctxt_.graph_data(graphid),
-                              opt.n_singular);
+                              opt.n_singular, opt.n_min_learn);
+    }
+    else {
+        ret = graph.learn_all(&ctxt_, Mod(BIG_UINT_PRIMES[opt.prime_no]),
+                                  ctxt_.graph_data(graphid),
+                                  opt.n_singular);
+    }
+
     node->alg_->set_learned(graph.has_learned());
 
     if (ret == SUCCESS) {

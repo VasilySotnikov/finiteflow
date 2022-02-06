@@ -2180,11 +2180,12 @@ extern "C" {
     MLNewPacket(mlp);
     MLTestHead( mlp, "List", &nargs);
 
-    int id, nodeid, primeno, maxsingular;
+    int id, nodeid, primeno, maxsingular, minlearn;
     MLGetInteger32(mlp, &id);
     MLGetInteger32(mlp, &nodeid);
     MLGetInteger32(mlp, &primeno);
     MLGetInteger32(mlp, &maxsingular);
+    MLGetInteger32(mlp, &minlearn);
     MLNewPacket(mlp);
 
     if (!session.node_exists(id, nodeid)) {
@@ -2197,6 +2198,8 @@ extern "C" {
       opt.prime_no = primeno;
     if (maxsingular >= 0)
       opt.n_singular = maxsingular;
+    if (minlearn >= 0)
+      opt.n_min_learn = minlearn;
 
     MLPutSymbol(mlp, "Null");
 
