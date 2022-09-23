@@ -2586,6 +2586,10 @@ extern "C" {
     Ret ret = session.reconstruct_univariate(id, res.get(), opt);
 
     if (ret != SUCCESS) {
+      if (ret == MISSING_PRIMES) {
+        MLPutSymbol(mlp, "FiniteFlow`FFMissingPrimes");
+        return LIBRARY_NO_ERROR;
+      }
       MLPutSymbol(mlp, "$Failed");
       return LIBRARY_NO_ERROR;
     }
