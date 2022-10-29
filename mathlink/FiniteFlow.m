@@ -191,6 +191,7 @@ FF::noalg = "No algorithm with identifier `1`."
 FF::nograph = "No graph with identifier `1`."
 FF::badalgvars = "The algorithm `1` depends on `2` variables, but `3` are required."
 FF::badneededvars = "Needed variables should be a subset of the unknowns."
+FF::badmatrixdim = "Algorithm received inconsistent matrix dimensions."
 
 FF::nonratsub = "Found invalid subexpression `1`"
 
@@ -669,7 +670,7 @@ RegisterNodeSparseSolver[gid_,inputs_,{columns_,vars_,neededvarsin_}]:=Module[
     CheckVariables[neededvars];
     If[!SubsetQ[vars,neededvars], Message[FF::badneededvars]; Throw[$Failed];];
     cols = (CheckedUInt32List/@columns);
-    If[!TrueQ[Max[Union@@cols]<=Length[vars]+1],Throw[$Failed];];
+    If[!TrueQ[Max[Union@@cols]<=Length[vars]+1],Message[FF::badmatrixdim]; Throw[$Failed];];
     FFRegisterNodeSparseSolverImplem[gid,inputs,Length[vars],cols-1,position/@neededvars]
   ]
 ];
