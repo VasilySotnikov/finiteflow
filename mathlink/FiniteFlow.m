@@ -1286,7 +1286,7 @@ FFDenseSolve[eqs_, vars_, OptionsPattern[]] := Module[
 ];
 
 
-Options[FFSparseSolve] := Join[{"Parameters"->Automatic, "IndepVarsOnly"->False, "MarkAndSweep"->True, "SparseOutput"->False},
+Options[FFSparseSolve] := Join[{"Parameters"->Automatic, "IndepVarsOnly"->False, "MarkAndSweep"->True, "SparseOutput"->False, "SolveMod" -> False },
                                    AutoReconstructionOptions[],
                                    Options[FFAlgSparseSolver]];
 FFSparseSolve[eqs_, vars_, OptionsPattern[]] := Module[
@@ -1309,7 +1309,7 @@ FFSparseSolve[eqs_, vars_, OptionsPattern[]] := Module[
       ];
       
       FFGraphOutput[graph,sys];
-      If[TrueQ[OptionValue["IndepVarsOnly"]], FFSetLearningOptions[graph,sys,"PrimeNo"->OptionValue["StartingPrimeNo"]];];
+      If[TrueQ[OptionValue["IndepVarsOnly"]] || TrueQ[OptionValue["SolveMod"]], FFSetLearningOptions[graph,sys,"PrimeNo"->OptionValue["StartingPrimeNo"]];];
       learn = FFSparseSolverLearn[graph,vars];
       If[!TrueQ[learn[[0]]==List],Throw[learn]];
       If[TrueQ[OptionValue["IndepVarsOnly"]], Throw["IndepVars"/.learn]];
@@ -1319,8 +1319,14 @@ FFSparseSolve[eqs_, vars_, OptionsPattern[]] := Module[
       ];
       
       res = If[TrueQ[params == {}],
-               FFReconstructNumeric[graph, Sequence@@FilterRules[{opt}, Options[FFReconstructNumeric]]],
-               FFReconstructFunction[graph,params, Sequence@@FilterRules[{opt}, Options[FFReconstructFunction]]]
+               If[TrueQ[OptionValue["SolveMod"]],
+                   FFGraphEvaluate[graph, {}, "PrimeNo"->OptionValue["StartingPrimeNo"]],
+                   FFReconstructNumeric[graph, Sequence@@FilterRules[{opt}, Options[FFReconstructNumeric]]]
+               ],
+               If[TrueQ[OptionValue["SolveMod"]],
+                   FFReconstructFunctionMod[graph,params, Sequence@@FilterRules[{opt}, Options[FFReconstructFunctionMod]]],
+                   FFReconstructFunction[graph,params, Sequence@@FilterRules[{opt}, Options[FFReconstructFunction]]]
+               ]
              ];
        If[!TrueQ[res[[0]]==List],Throw[res]];
        FFSparseSolverSol[res,learn]
