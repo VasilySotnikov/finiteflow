@@ -316,6 +316,11 @@ toFFInternalUnsignedFlag[var_, Automatic]:=-1;
 toFFInternalUnsignedFlag[var_, n_Integer]:=If[TrueQ[n>=0], n, Message[FF::baduintflag, var]; Throw[$Failed]];
 toFFInternalUnsignedFlag[var_, other_]:=(Message[FF::baduintflag, var]; Throw[$Failed]);
 
+toFFInternalUnsignedFlag["PrimeNo", n_Integer]:= If[n > FFMaxPrimeNo[], 
+    Message[FFPrimeNo::ofrange, n, FFMaxPrimeNo[]];
+    Throw[$Failed],
+    toFFInternalUnsignedFlag["", n]
+];
 
 toFFInternalPoly[poly_,vars_] := ({#[[1]],ToString[#[[2]],InputForm]})&/@PolyCoefficientRules[poly, vars];
 toFFInternalRatFun[ratfun_,vars_] := {toFFInternalPoly[Numerator[ratfun],vars],toFFInternalPoly[Denominator[ratfun],vars]};
@@ -1385,9 +1390,13 @@ FFGraphEvaluate[g_,x_,OptionsPattern[]]:=FFGraphEvaluateImplem[GetGraphId[g],Che
 Options[FFGraphEvaluateMany]={"PrimeNo"->0,"NThreads"->FFNThreads};
 FFGraphEvaluateMany[g_,x_List,OptionsPattern[]]:=FFGraphEvaluateListImplem[GetGraphId[g],If[TrueQ[#==Automatic],FFAutomaticNThreads[],CheckedInt32[#]]&@OptionValue["NThreads"],CheckedInt32[OptionValue["PrimeNo"]],CheckedInt64List/@x];
 
+FFPrimeNo::ofrange = "Prime number `1` is not available (`2` implemented)";
 
-FFPrimeNo[i_]:=FFPrimeNoImplem[CheckedInt32[i]];
-
+FFPrimeNo[i_]:= If[i > FFMaxPrimeNo[], 
+    Message[FFPrimeNo::ofrange, i, FFMaxPrimeNo[]];
+    $Failed,
+    FFPrimeNoImplem[CheckedInt32[i]]
+];
 
 NoEmptyList[a_]:=a;
 NoEmptyList[{}]={1};
