@@ -101,7 +101,7 @@ namespace fflow {
 
       Mod mod(BIG_UINT_PRIMES[(start_mod + mod_i) % BIG_UINT_PRIMES_SIZE]);
 
-      if (mod_i) {
+      if (mod_i && max_primes>1) {
 
         for (unsigned check_i=0; check_i<n_checks+n_singular; ++check_i) {
 
