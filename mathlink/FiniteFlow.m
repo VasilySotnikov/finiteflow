@@ -156,6 +156,7 @@ FFNSamplePoints::usage = "FFNSamplePoints[graph] returns a list of length two.  
 
 FFGraphEvaluate::usage="FFGraphEvaluate[graph,point] evaluates graph at point, where point is a list of integers.  The prime field may be changed passing the option \"PrimeNo\"."
 FFGraphEvaluateMany::usage="FFGraphEvaluateMany[graph,points] evaluates graph at the specified list of points.  The prime field may be changed globally using the option \"PrimeNo\", or individually for each point by appending an additional entry with the index of the prime to be used.  By default, evaluations are performed in parallel."
+FFMaxPrimeNo::usage="FFMaxPrimeNo returns the index of the maximal hardcoded prime used by finiteflow."
 FFPrimeNo::usage="FFPrimeNo[i] with i>=0 returns the i-th hardcoded prime used by finiteflow."
 FFMulInv::usage="FFMulInv[z,p] returns the multiplicative inverse of the integer z module a prime p."
 FFRatMod::usage="FFRatMod[z,p] returns z mod p, where z is a rational number and p is a prime."
@@ -1759,6 +1760,7 @@ FFLoadLibObjects[] := Module[
     FFGraphEvaluateImplem=LibraryFunctionLoad[fflowlib, "fflowml_graph_evaluate", LinkObject, LinkObject];
     FFGraphEvaluateListImplem=LibraryFunctionLoad[fflowlib, "fflowml_graph_evaluate_list", LinkObject, LinkObject];
     FFPrimeNoImplem=LibraryFunctionLoad[fflowlib, "fflowml_prime_no", LinkObject, LinkObject];
+    FFMaxPrimeNo = LibraryFunctionLoad[fflowlib, "fflowml_max_prime_no", LinkObject, LinkObject];
     FFNSamplePointsImplem=LibraryFunctionLoad[fflowlib, "fflowml_alg_count_sample_points", LinkObject, LinkObject];
     FFRatRecImplem=LibraryFunctionLoad[fflowlib, "fflowml_alg_rat_rec", LinkObject, LinkObject];
     FFAlgRatExprEvalImplem = LibraryFunctionLoad[fflowlib, "fflowml_alg_ratexpr_eval", LinkObject, LinkObject];

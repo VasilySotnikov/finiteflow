@@ -923,6 +923,20 @@ extern "C" {
     return LIBRARY_NO_ERROR;
   }
 
+  int fflowml_max_prime_no(WolframLibraryData libData, MLINK mlp)
+  {
+    (void)(libData);
+    FFLOWML_SET_DBGPRINT();
+
+    int two;
+    MLTestHead( mlp, "List", &two);
+
+    MLNewPacket(mlp);
+    MLPutInteger64(mlp, BIG_UINT_PRIMES_SIZE-1);
+
+    return LIBRARY_NO_ERROR;
+  }
+
 
 #if 0
   int fflowml_tree_level(WolframLibraryData libData, MLINK mlp)
