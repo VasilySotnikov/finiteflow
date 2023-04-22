@@ -37,3 +37,11 @@ The definition of a node in a graph returns `$Failed`
 -----------------------------------------------------
 
 This can happen because of multiple reasons, but it is often due to the fact that the expected numbers of inputs of the new node, or their length, is incompatible with the selected input nodes.
+
+
+
+
+Library `librt.so` is not found
+------------------------------------------------------
+
+It appears that in some ubuntu distributions the `librt.so` should actually by `librt.so.1`. This seems to be broken in `Mathematica_rt_LIBRARY`. As a workaround we can manually rename `librt.so` to `librt.so.1` in all files generated  by `cmake`
