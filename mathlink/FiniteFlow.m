@@ -1249,7 +1249,7 @@ FFMultiFitSol[sol_,learn_]:=MapThread[FFDenseSolverSol,{PartitionsWithLen[sol,(L
 AutoReconstructionOptions[]:=Options[FFReconstructFunction];
 
 
-Options[FFDenseSolve] := Join[{"Parameters"->Automatic, "IndepVarsOnly"->False},
+Options[FFDenseSolve] := Join[{"Parameters"->Automatic, "IndepVarsOnly"->False, "SolveMod" -> False },
                                    AutoReconstructionOptions[],
                                    Options[FFAlgDenseSolver]];
 FFDenseSolve[eqs_, vars_, OptionsPattern[]] := Module[
@@ -1269,14 +1269,20 @@ FFDenseSolve[eqs_, vars_, OptionsPattern[]] := Module[
       If[res==$Failed,Throw[$Failed]];
       
       FFGraphOutput[graph,sys];
-      If[TrueQ[OptionValue["IndepVarsOnly"]], FFSetLearningOptions[graph,sys,"PrimeNo"->OptionValue["StartingPrimeNo"]];];
+      If[TrueQ[OptionValue["IndepVarsOnly"]] || TrueQ[OptionValue["SolveMod"]], FFSetLearningOptions[graph,sys,"PrimeNo"->OptionValue["StartingPrimeNo"]];];
       learn = FFDenseSolverLearn[graph,vars];
       If[!TrueQ[learn[[0]]==List],Throw[learn]];
       If[TrueQ[OptionValue["IndepVarsOnly"]], Throw["IndepVars"/.learn]];
       
       res = If[TrueQ[params == {}],
-                FFReconstructNumeric[graph, Sequence@@FilterRules[{opt}, Options[FFReconstructNumeric]]],
-                FFReconstructFunction[graph,params, Sequence@@FilterRules[{opt}, Options[FFReconstructFunction]]]
+                If[TrueQ[OptionValue["SolveMod"]],
+                    FFGraphEvaluate[graph, {}, "PrimeNo"->OptionValue["StartingPrimeNo"]],
+                    FFReconstructNumeric[graph, Sequence@@FilterRules[{opt}, Options[FFReconstructNumeric]]]
+                ],
+                If[TrueQ[OptionValue["SolveMod"]],
+                    FFReconstructFunctionMod[graph,params, Sequence@@FilterRules[{opt}, Options[FFReconstructFunctionMod]]],
+                    FFReconstructFunction[graph,params, Sequence@@FilterRules[{opt}, Options[FFReconstructFunction]]]
+                ]
              ];
        If[!TrueQ[res[[0]]==List],Throw[res]];
        FFDenseSolverSol[res,learn]
